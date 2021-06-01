@@ -12,13 +12,13 @@ class CustomUser(AbstractUser):
 
 
 class Plan(models.Model):
-    operator = models.CharField(default="",max_length=255)
+    operator = models.CharField(default="", max_length=255)
     type = models.CharField(max_length=255)
     amount = models.IntegerField()
     validity = models.CharField(max_length=255)
 
     def __str__(self):
-        return str(self.operator)+","+str(self.type)
+        return str(self.operator) + "," + str(self.type)
 
 
 class Recharge(models.Model):
@@ -28,3 +28,11 @@ class Recharge(models.Model):
 
     class Meta:
         verbose_name_plural = "recharge"
+
+    def __str__(self):
+        return str(self.recharge_number) + "," + str(self.plan)
+
+
+class RecentRecharge(models.Model):
+    recharged_number = models.ForeignKey(Recharge, on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    date = models.DateField()
