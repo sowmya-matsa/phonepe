@@ -1,43 +1,30 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
-class Login(models.Model):
-    mobile_number = models.BigIntegerField()
-    otp = models.IntegerField()
+class CustomUser(AbstractUser):
+    mobile = models.BigIntegerField(null=True, blank=True)
+    otp = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.mobile_number)
-
-    class Meta:
-        verbose_name_plural = "login"
+        return str(self.mobile)
 
 
-class Operator(models.Model):
-    name = models.CharField(max_length=255)
-    type_of_recharge = models.CharField(max_length=255)
+class Plan(models.Model):
+    operator = models.CharField(default="",max_length=255)
+    type = models.CharField(max_length=255)
     amount = models.IntegerField()
     validity = models.CharField(max_length=255)
 
     def __str__(self):
-        return str(self.name)
-
-
-class Contacts(models.Model):
-    contact_name = models.CharField(max_length=255)
-    mobile_number = models.IntegerField()
-    user = models.ForeignKey(Login, on_delete=models.SET_NULL, default=None, blank=True, null=True)
-
-    def __str__(self):
-        return str(self.contact_name)
-
-    class Meta:
-        verbose_name_plural = "contacts"
+        return str(self.operator)+","+str(self.type)
 
 
 class Recharge(models.Model):
-    contact = models.ForeignKey(Contacts, on_delete=models.SET_NULL, default=None, blank=True, null=True)
-    operand = models.ForeignKey(Operator, on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    recharge_number = models.IntegerField()
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, default=None, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "recharge"
